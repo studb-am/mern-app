@@ -6,7 +6,7 @@ export const theme = createTheme({
             main: '#781C68'
         } ,
         secondary: {
-            main: '#FFD39A' 
+            main: '#FFD39A'
         },
         info: {
             main: '#086E7D' 
@@ -26,4 +26,7 @@ export const theme = createTheme({
     }
 });
 
-export const IS_MOBILE_VIEW_DEF = '(max-width: 600px)';
+export const IS_MOBILE_SMALL_VIEW_DEF = '(max-width: 600px)';
+export const IS_MOBILE_MED_VIEW_DEF = '(max-width: 1000px)';
+
+export const menuItems = ['User','Places','Login'];

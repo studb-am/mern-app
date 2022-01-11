@@ -2,11 +2,13 @@ import React from 'react';
 import {
   Drawer as MuiDrawer,
   Box,
-  ListItem,
   ListItemIcon,
   ListItemText,
+  ListItemButton
 } from '@mui/material';
-import {Person, FmdGood} from '@mui/icons-material';
+import {Person, FmdGood, Login} from '@mui/icons-material';
+
+import { menuItems } from '../../assets/util';
 
 const Drawer = props => {
   const {anchor, open, openDrawerHandler} = props;
@@ -23,14 +25,16 @@ const Drawer = props => {
         onClick={() => openDrawerHandler (false)}
         onKeyDown={() => openDrawerHandler (false)}
       >
-        {['User', 'Places'].map ((item, index) => {
+        {menuItems.map ((item, index) => {
           return (
-            <ListItem button key={index}>
+            <ListItemButton key={index}>
               <ListItemIcon>
-                {index === 0 ? <Person /> : <FmdGood />}
+                {index === 0 ? <Person /> : index === 1 ? <FmdGood /> : <Login />}
               </ListItemIcon>
-              <ListItemText>{item}</ListItemText>
-            </ListItem>
+              <ListItemText>
+                {item}
+              </ListItemText>
+            </ListItemButton>
           );
         })}
       </Box>

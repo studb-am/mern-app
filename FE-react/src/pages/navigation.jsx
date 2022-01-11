@@ -1,25 +1,25 @@
-import React from "react";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route
-} from 'react-router-dom';
+import React from 'react';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import { ThemeProvider } from '@mui/material';
 
 import Header from '../components/header/header.component';
-import UsersPage from "./users/users.component";
-import HomePage from "./home/home.component";
+import {default as UsersPage} from './users/users.container';
+import HomePage from './home/home.component';
+import { theme } from '../assets/util'; 
 
 const Navigator = props => {
-    return <div>
-        <Header />
-        <Router>
-            <Routes>
-                <Route path="/" exact element={<HomePage />} />
-                <Route path="/users" exact element={<UsersPage />} />
-                <Route path="*" element={<h2>Nothing found</h2>} />
-            </Routes>
-        </Router>
-    </div>
-}
+  return (
+    <ThemeProvider theme={theme}>
+      <Header />
+      <Router>
+        <Routes>
+          <Route path="/" exact element={<HomePage />} />
+          <Route path="/users" exact element={<UsersPage />} />
+          <Route path="*" element={<h2>Nothing found</h2>} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
+};
 
 export default Navigator;
