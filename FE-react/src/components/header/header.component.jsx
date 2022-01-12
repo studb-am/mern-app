@@ -5,13 +5,13 @@ import {
   Box,
   Toolbar,
   Typography,
-  Button,
   IconButton,
   useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import Drawer from '../drawer/drawer.component';
+import MenuButton from '../menuButton/menuButton.component';
 import {IS_MOBILE_SMALL_VIEW_DEF, menuItems} from '../../assets/util';
 
 const Header = props => {
@@ -50,7 +50,7 @@ const Header = props => {
             />}
           {!isMobile &&
             <React.Fragment>
-              {menuItems.map((menuItem, index) => <Button color="inherit" key={index.toString()}>{menuItem}</Button>)}
+              {menuItems.map((menuItem, index) => <MenuButton key={index.toString()}>{menuItem}</MenuButton>)}
             </React.Fragment>}
         </Toolbar>
       </AppBar>

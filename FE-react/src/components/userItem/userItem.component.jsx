@@ -2,13 +2,13 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {CardHeader, CardActionArea, Avatar, Card} from '@mui/material';
 
-import {cardStyle, avatarStyle} from './card.styles';
+import {cardStyle, avatarStyle} from './userItem.styles';
 
-const MyCard = props => {
+const UserItem = props => {
   const {user} = props;
   return (
     <Card variant="outlined" sx={cardStyle} key={user.id}>
-      <Link to={user.id} style={{color: 'inherit', textDecoration: 'none'}}>
+      <Link to={`/${user.id}/places`} style={{color: 'inherit', textDecoration: 'none'}}>
         <CardActionArea>
           <CardHeader
             avatar={<Avatar src={user.image} sx={avatarStyle} />}
@@ -22,4 +22,4 @@ const MyCard = props => {
   );
 };
 
-export default MyCard;
+export default UserItem;

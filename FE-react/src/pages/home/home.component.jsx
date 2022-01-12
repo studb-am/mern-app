@@ -1,8 +1,9 @@
 import React from 'react';
-import './home.css';
+
+import { StyledBox as Box } from './home.styles';
 
 const HomePage = props => { 
-    return <h2>HomePage</h2>
+    return <Box>Test box</Box>
 }
 
 export default HomePage;

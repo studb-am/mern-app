@@ -3,7 +3,8 @@ import { createTheme } from '@mui/material/styles';
 export const theme = createTheme({
     palette: {
         primary: {
-            main: '#781C68'
+            main: '#781C68',
+            dark: '#401639'
         } ,
         secondary: {
             main: '#FFD39A'
@@ -29,4 +30,4 @@ export const theme = createTheme({
 export const IS_MOBILE_SMALL_VIEW_DEF = '(max-width: 600px)';
 export const IS_MOBILE_MED_VIEW_DEF = '(max-width: 1000px)';
 
-export const menuItems = ['User','Places','Login'];
+export const menuItems = ['User','Add a place','Login'];

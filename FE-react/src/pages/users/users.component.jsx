@@ -5,7 +5,7 @@ import {
   IS_MOBILE_MED_VIEW_DEF,
   IS_MOBILE_SMALL_VIEW_DEF,
 } from '../../assets/util';
-import {default as Card} from '../../components/card/card.component';
+import UserItem from '../../components/userItem/userItem.component';
 import {gridContainerStyle, gridStyle} from './user.styles';
 
 const UsersPage = props => {
@@ -30,7 +30,7 @@ const UsersPage = props => {
         {users.map (user => {
           return (
             <Grid item xs={gridDimensionByMedia()} key={user.id}>
-              <Card user={user} />
+              <UserItem user={user} />
             </Grid>
           );
         })}
