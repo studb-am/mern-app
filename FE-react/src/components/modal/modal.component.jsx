@@ -1,21 +1,27 @@
 import React from 'react';
-import {Modal as MuiModal, Box, Button, useMediaQuery} from '@mui/material';
+import {
+  Modal as MuiModal,
+  CardContent,
+  Box,
+  Button,
+} from '@mui/material';
 
 import {StyledCard, StyledCardHeader} from './modal.styles';
-import {IS_MOBILE_SMALL_VIEW_DEF} from '../../assets/util';
+import Map from '../map/map.component';
 
 const Modal = props => {
-  const {open, onClose, title} = props;
-  const isMobileView = useMediaQuery (IS_MOBILE_SMALL_VIEW_DEF);
+  const {open, onClose, title, location} = props;
 
   return (
     <MuiModal open={open} onClose={onClose}>
-      <StyledCard isMobileView={isMobileView}>
+      <StyledCard>
         <StyledCardHeader title={title} />
-        <Box sx={{bgcolor: 'lavender', height: '70%'}} />
-        <Box padding={3} textAlign='center' justifyContent="center">
+        <CardContent sx={{ height: '95%'}}>
+          <Map location={location} />
+          <Box padding={3} textAlign="center">
             <Button variant="contained" onClick={onClose}>Close</Button>
-        </Box>
+          </Box>
+        </CardContent>
       </StyledCard>
     </MuiModal>
   );

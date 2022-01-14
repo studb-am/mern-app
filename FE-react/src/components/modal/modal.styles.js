@@ -4,9 +4,9 @@ import { Card, CardHeader } from "@mui/material";
 import { theme } from '../../assets/util';
 
 export const StyledCard = styled(Card)`
-    width: ${props => props.isMobileView ? '90%' : '60%'};
+    width: 90%;
     height: 60%;
-    margin-left: ${props => props.isMobileView ? '5%' : '20%'};
+    margin-left: 5%;
     margin-top: 15%;
     box-shadow: 24;
 `;
@@ -14,4 +14,5 @@ export const StyledCard = styled(Card)`
 export const StyledCardHeader = styled(CardHeader)`
     background-color: ${theme.palette.primary.main};
     color: ${theme.palette.neutral.main};
+    height: 5%;
 `;

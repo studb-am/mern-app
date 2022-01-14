@@ -35,6 +35,7 @@ const PlaceItem = props => {
         open={isOpen}
         onClose={() => toggleModalOpen(false)}
         title={title}
+        location={location}
       />
     </Card>
   );

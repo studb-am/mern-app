@@ -1,0 +1,15 @@
+.formControl {
+    margin-top: 2%;
+    margin-left: 10%;
+    width: 80%;
+}
+
+.formContainer {
+    width: 100vw;
+    height: calc(100vh - 95px);
+}
+
+.buttonContainer {
+    width: 100%;
+    left: 40%
+}

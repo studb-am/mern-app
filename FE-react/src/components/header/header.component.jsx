@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 import {
   AppBar,
@@ -17,6 +18,8 @@ import {IS_MOBILE_SMALL_VIEW_DEF, menuItems} from '../../assets/util';
 const Header = props => {
   //questa variabile mi permette di utilizzare l'hook della media query così da cambiare le visualizzazioni se lo schermo è desktop o mobile
   const isMobile = useMediaQuery (IS_MOBILE_SMALL_VIEW_DEF);
+  //variabile di navigation
+  const navigateTo = useNavigate ();
 
   //vado a definire una variabile di stato per il nostro Drawer
   const [drawerIsOpen, setDrawerIsOpen] = useState (false);
@@ -50,7 +53,16 @@ const Header = props => {
             />}
           {!isMobile &&
             <React.Fragment>
-              {menuItems.map((menuItem, index) => <MenuButton key={index.toString()}>{menuItem}</MenuButton>)}
+              {menuItems.map ((menuItem, index) => (
+                <MenuButton
+                  key={index.toString ()}
+                  onClick={() => {
+                    navigateTo (`/${menuItem.replace(" ","-").toLowerCase()}`);
+                  }}
+                >
+                  {menuItem}
+                </MenuButton>
+              ))}
             </React.Fragment>}
         </Toolbar>
       </AppBar>
