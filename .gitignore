@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /FE-react/node_modules
+/BE-nodeExpress/node_modules
 /.pnp
 .pnp.js
 
