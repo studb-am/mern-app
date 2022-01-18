@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 
 const StyledButton = styled('button')`
     padding: 10px;
+    font-size: 0.875rem;
     background-color: ${theme.palette.primary.main};
     border: 0;
     color: white;

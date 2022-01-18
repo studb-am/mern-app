@@ -71,7 +71,7 @@ const Form = props => {
           id="title"
           label="Title"
           fullWidth
-          error={!state.title.isValid && state.title.hasBeenFocued}
+          error={!state.title.isValid && state.title.hasBeenFocused}
           helperText={
             !state.title.isValid &&
             state.title.hasBeenFocued &&
@@ -92,7 +92,7 @@ const Form = props => {
           multiline
           rows={4}
           fullWidth
-          error={!state.description.isValid && state.description.hasBeenFocued}
+          error={!state.description.isValid && state.description.hasBeenFocused}
           helperText={
             !state.description.isValid &&
             state.description.hasBeenFocued &&

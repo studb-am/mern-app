@@ -1,22 +1,35 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Card,
+  Box,
   CardActions,
   CardContent,
   CardMedia,
   Button,
-  Typography
+  Stack,
+  Typography,
+  Modal
 } from '@mui/material';
 
-import Modal from '../modal/modal.component';
+import { modalStyle } from './placeItem.styles';
+import MapModal from '../mapModal/mapModal.component';
+import { AuthContext } from '../../pages/auth/auth.context';
 
 const PlaceItem = props => {
-  const {id, title, description, location, imageUrl} = props;
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleModalOpen = bool => setIsOpen(bool);
+  const { id, title, description, location, imageUrl } = props;
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [isDelOpen, setIsDelOpen] = useState(false);
+
+  const auth = useContext(AuthContext);
+
+  const deletePlaceItem = () => {
+    setIsDelOpen(false);
+    console.log('DELETING....');
+  }
 
   return (
-    <Card sx={{width: '100%', maxWidth: 450, marginBottom: 4}}>
+    <Card sx={{ width: '100%', maxWidth: 450, marginBottom: 4 }}>
       <CardMedia component="img" height="140" image={imageUrl} alt={title} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -26,17 +39,31 @@ const PlaceItem = props => {
           {description}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small" onClick={() => toggleModalOpen(true)}>View Map</Button>
-        <Button size="small">Edit</Button>
-        <Button size="small">Delete</Button>
+      <CardActions sx={{alignItems: 'center', justifyContent: 'center'}}>
+        <Button size="small" onClick={() => setIsMapOpen(true)}>View Map</Button>
+        {auth.userIsLogged && <Link to={`/update-place/${id}`} style={{ textDecoration: 'none' }}><Button size="small">Edit</Button></Link>}
+        {auth.userIsLogged && <Button size="small" onClick={() => setIsDelOpen(true)}>Delete</Button>}
       </CardActions>
-      <Modal 
-        open={isOpen}
-        onClose={() => toggleModalOpen(false)}
+      <MapModal
+        open={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
         title={title}
         location={location}
       />
+      <Modal
+        hideBackdrop
+        open={isDelOpen}
+        onClose={() => setIsDelOpen(false)}
+      >
+        <Box sx={modalStyle}>
+          <h2>Are you sure?</h2>
+          <p>By confirming the operation, you will no longer able to see delete data</p>
+          <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
+            <Button onClick={() => setIsDelOpen(false)} variant="outlined">No</Button>
+            <Button onClick={deletePlaceItem} variant="contained">Yes</Button>
+          </Stack>
+        </Box>
+      </Modal>
     </Card>
   );
 };

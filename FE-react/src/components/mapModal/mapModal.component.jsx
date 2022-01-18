@@ -6,10 +6,10 @@ import {
   Button,
 } from '@mui/material';
 
-import {StyledCard, StyledCardHeader} from './modal.styles';
+import {StyledCard, StyledCardHeader} from './mapModal.styles';
 import Map from '../map/map.component';
 
-const Modal = props => {
+const MapModal = props => {
   const {open, onClose, title, location} = props;
 
   return (
@@ -27,4 +27,4 @@ const Modal = props => {
   );
 };
 
-export default Modal;
+export default MapModal;

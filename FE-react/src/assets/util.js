@@ -30,4 +30,4 @@ export const theme = createTheme({
 export const IS_MOBILE_SMALL_VIEW_DEF = '(max-width: 600px)';
 export const IS_MOBILE_MED_VIEW_DEF = '(max-width: 1000px)';
 
-export const menuItems = ['Users','New Place','Login'];
+export const menuItems = [{value: 'Users', mode: 'public'},{value: 'New Place', mode: 'private'},{value: 'Authenticate', mode: 'public'}];
