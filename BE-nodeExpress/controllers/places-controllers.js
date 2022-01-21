@@ -1,4 +1,6 @@
 const HttpError = require('../models/http-error');
+const Place = require('../models/place');
+
 
 let DUMMY_DATA = [
     {
@@ -25,44 +27,59 @@ let DUMMY_DATA = [
     }
 ];
 
-const getPlacesByUserId = (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
     const { userId } = req.params;
-    const places = DUMMY_DATA.filter(placeItem => placeItem.creator === userId);
+    
+    let places;
+    try {
+	places = await Place.find({creator: userId});
+    } catch(err) {
+	return next(new HttpError(err.message, 500));
+    }
 
     if (!places.length) {
         next(new HttpError('Could not find a place for the provided user Id', 404));
         return;
     }
 
-    res.status(200).json({ data: places });
+    res.status(200).json({ data: places.map(place => place.toObject({ getters: true })) });
 }
 
-const getPlaceByPlaceId = (req, res, next) => {
+const getPlaceByPlaceId = async (req, res, next) => {
     const { placeId } = req.params;
-    const place = DUMMY_DATA.find(placeItem => placeItem.id === placeId);
+    
+    let place;
+    try {
+	    place = await Place.findById(placeId);
+    } catch(err) {
+	return next(new HttpError(err.message, 500));
+    }
 
     if (!place) {
-        next(new HttpError('Could not find a place for the provided Id', 404));
-        return;
+        return next(new HttpError('Could not find a place for the provided Id', 404));
     }
 
-    res.status(200).json({ data: place });
+    res.status(200).json({ data: place.toObject({ getters: true }) });
 }
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
     const { title, description, creator, imageUrl, coordinates } = req.body;
+    
+    const placeToCreate = new Place({
+	    title,
+	    description,
+	    imageUrl,
+	    location: coordinates,
+	    creator
+    });
 
-    const newPlace = {
-        id: 'p3',
-        title,
-        description,
-        imageUrl,
-        location: coordinates,
-        creator,
+    try {
+	    await placeToCreate.save();
+    } catch(err) {
+	    return next(new HttpError(err.message, 500));
     }
-
-    DUMMY_DATA.push(newPlace);
-    res.status(201).json({ place: newPlace });
+    
+    res.status(201).json({ placeCreated: placeToCreate });
 }
 
 const updatePlace = (req, res, next) => {

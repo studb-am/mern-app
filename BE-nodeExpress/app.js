@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const HttpError = require('./models/http-error');
 
 const placesRoutes = require('./routes/places-routes');
@@ -27,6 +28,13 @@ app.use((error, req, res, next) => {
 
 })
 
-app.listen(4000, () => {
-    console.log("Server up and running!");
-});
+mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongoDB:${process.env.MONGO_PORT}/app?authSource=admin`)
+	.then(() => {
+	  app.listen(4000, () => {
+    	    console.log("Server up and running!");
+	  })
+	})
+	.catch(err => {
+	  console.log(err.message);
+	});
+	  
