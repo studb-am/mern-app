@@ -4,6 +4,8 @@ services:
   node-server:
     container_name: node-server
     image: node_mongo_custom
+    ports:
+      - 4000:4000
     volumes:
       - "/root/projects/mern-app/BE-nodeExpress:/usr/src"
     environment:
@@ -15,11 +17,9 @@ services:
   mongoDB:
     container_name: "mongoDB"
     image: mongo
-    ports:
-      - 27017:27017
     volumes:
       - mongo_mern_data:/data/db
-      - mongo_test_config:/data/configdb
+      - mongo_mern_config:/data/configdb
     env_file:
       - mongoDB-credential.env
 volumes:
