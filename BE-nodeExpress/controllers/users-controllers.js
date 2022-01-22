@@ -1,4 +1,5 @@
 const HttpError = require('../models/http-error');
+const User = require('../models/user');
 
 let DUMMY_USERS = [
     {
@@ -13,24 +14,36 @@ const getUsers = (req, res, next) => {
     res.status(200).json({data: DUMMY_USERS});
 }
 
-const signUp = (req, res, next) => {
-    const {name, email, password} = req.body;
+const signUp = async (req, res, next) => {
+    const {name, email, password, image} = req.body;
     
     //Check 1: verify that the email has never been used
-    const userWithSameEmail = DUMMY_USERS.find(user => user.email === email);
-    if(userWithSameEmail) {
-        throw new Error('Mail already registered with another user!');
+    let exsistingUser;
+    try {
+	existingUser = await User.findOne({email: email});
+    } catch(err) {
+	return next(new HttpError(err.messsage, 500));
     }
 
-    const createdUser = {
-        id: 'u2',
-        name,
-        email,
-        password
-    };
-    DUMMY_USERS.push(createdUser);
+    if (existingUser) {
+	return next(new HttpError('Mail already used by another user!', 422));
+    }	
 
-    res.status(201).json({ createdUser })
+    const userToCreate = new User({
+	name,
+	email,
+	password,
+	image,
+	places: 'p1'
+    });
+
+    try {
+	await userToCreate.save();
+    } catch(err) {
+	return next(new HttpError(err.message, 422));
+    }
+
+    res.status(201).json({ createdUser: userToCreate })
 
 }
 
