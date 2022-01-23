@@ -9,6 +9,15 @@ const app = express();
 
 app.use(express.json());
 
+//Configurazione iniziale che ci permette di lavorare con la CORS policy lato browser
+app.use((req, res, next) => {
+	res.setHeaders('Access-Control-Allow-Origin', '*');
+	res.setHeaders('Access-Control-Allow-Headers','Origin X-Requested-Width Content-Type Accept Authorization');
+	res.setHeaders('Access-Control-Allow-Methods', 'GET POST PATCH DELETE');
+	next();
+})
+
+
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
 
