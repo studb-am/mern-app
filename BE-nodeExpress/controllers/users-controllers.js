@@ -1,17 +1,14 @@
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
-let DUMMY_USERS = [
-    {
-        id: 'u1',
-        name: 'Manuel',
-        email: 'test@test.com',
-        password: 'tester'
+const getUsers = async (req, res, next) => {
+    let users;	
+    try {
+	users = await User.find({}, {email: 1, name: 1, places: 1});
+    } catch (err) {
+	return next(new HttpError(err.messge, 500));
     }
-];
-
-const getUsers = (req, res, next) => {
-    res.status(200).json({data: DUMMY_USERS});
+    res.status(200).json({users});
 }
 
 const signUp = async (req, res, next) => {
@@ -34,7 +31,7 @@ const signUp = async (req, res, next) => {
 	email,
 	password,
 	image,
-	places: 'p1'
+	places: []
     });
 
     try {
@@ -47,12 +44,18 @@ const signUp = async (req, res, next) => {
 
 }
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     const {email, password} = req.body;
 
-    const checkUser = DUMMY_USERS.find(user => user.email === email && user.password === password);
-    if(!checkUser) {
-        throw new Error('Login failed! Invalid Credential');
+    let existingUser;
+    try {
+	existingUser = await User.findOne({email: email});
+    } catch(err) {
+	return next(new HttpError(err.message, 422));
+    }
+
+    if(!existingUser || existingUser.password !== password) {
+        return next(new HttpError('Login failed! Invalid Credential', 500));
     }
 
     res.status(200).json({message: 'Successfully logged in!'});

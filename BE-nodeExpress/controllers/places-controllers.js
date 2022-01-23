@@ -1,5 +1,8 @@
+const mongoose = require('mongoose');
+
 const HttpError = require('../models/http-error');
 const Place = require('../models/place');
+const User = require('../models/user');
 
 
 const getPlacesByUserId = async (req, res, next) => {
@@ -48,8 +51,24 @@ const createPlace = async (req, res, next) => {
 	    creator
     });
 
-    try {
-	    await placeToCreate.save();
+   let user;
+   try {
+	user = await User.findById(creator);
+   } catch(err) {
+	return next(new HttpError(err.message, 500));
+   }
+
+   if (!user) {
+	return next(new HttpError('Could not find the user provided. Please try again with a valid user!', 422));
+   }
+   //nota: va capito come configurare le repliche per poter utilizzare le transazioni di mongo ed evitare l'errore "Transaction numbers are only allowed on a replica set member or mongos"
+   try {
+	const currSession = await mongoose.startSession();
+	currSession.startTransaction();
+	await placeToCreate.save({session: currSession});
+	await user.places.push(placeToCreate); 
+	await user.save({session: currSession});
+	await currSession.commitTransaction();
     } catch(err) {
 	    return next(new HttpError(err.message, 500));
     }
@@ -85,8 +104,13 @@ const deletePlace = async (req, res, next) => {
 
     let placeToDelete;
     try {
-	placeToDelete = await Place.findById(placeId);
-	await placeToDelete.remove();
+	placeToDelete = await Place.findById(placeId).populate('creator');
+	const currSession = await mongoose.startSession();
+	await currSession.startTransaction();
+	await placeToDelete.remove({session: currSession});
+	placeToDelete.creator.places.pull(placeToDelete); //grazie al link del populate creator riesco a togliere anche il posto cancellato dalla lista dei posti associati agli utenti
+	await placeToDelete.creator.save({session: currSession});
+	await currSession.commitTransaction();
     } catch(err) {
 	return next(new HttpError(err.message, 500));
     }

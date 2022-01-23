@@ -14,16 +14,53 @@ services:
       - mongoDB-credential.env
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-  mongoDB:
-    container_name: "mongoDB"
-    image: mongo
+  mongodb1:
+    container_name: "mongodb1"
+    image: mongo:latest
+    restart: always
     volumes:
-      - mongo_mern_data:/data/db
-      - mongo_mern_config:/data/configdb
+      - mongo_data_1:/data/db
+      - mongo_config_1:/data/configdb
+    expose:
+      - "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
     env_file:
       - mongoDB-credential.env
+  mongodb2:
+    container_name: "mongodb2"
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data_2:/data/db
+      - mongo_config_2:/data/configdb
+    env_file:
+      - mongoDB-credential.env
+    expose:
+      -  "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
+  mongodb3:
+    container_name: "mongodb3"
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data_3:/data/db
+      - mongo_config_3:/data/configdb
+    env_file:
+      - mongoDB-credential.env
+    expose:
+      -  "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+
 volumes:
-    mongo_mern_data:
+    mongo_data_1:
       external: true
-    mongo_mern_config:
+    mongo_config_1:
+      external: true
+    mongo_data_2:
+      external: true
+    mongo_config_2:
+      external: true
+    mongo_data_3:
+      external: true
+    mongo_config_3:
       external: true
