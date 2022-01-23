@@ -14,7 +14,7 @@ import { AuthContext } from './auth/auth.context';
 import { theme } from '../assets/util';
 
 const Navigator = props => {
-  const [userIsLogged, setUserIsLogged] = useState(true);
+  const [userIsLogged, setUserIsLogged] = useState(false);
   const login = useCallback(() => setUserIsLogged(true), []);
   const logout = useCallback(() => { console.log('loggedOut'); setUserIsLogged(false) }, []);
 

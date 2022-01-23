@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useContext } from 'react';
 import {
     FormControl,
     InputAdornment,
@@ -13,6 +13,8 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { validate, VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
+import { AuthContext } from './auth.context';
+import { authenticate } from './auth.functions';
 
 const initialState = {
     email: {
@@ -82,7 +84,7 @@ const AuthPage = props => {
 
     const [state, dispatch] = useReducer(formReducer, initialState);
 
-    console.log(state);
+    const auth = useContext(AuthContext);
 
     return <div className="formContainer">
         <Typography variant="h6" sx={{ padding: 3 }}>
@@ -172,7 +174,7 @@ const AuthPage = props => {
                     variant="contained"
                     disabled={isLogin ? !state.meta.loginIsValid : !state.meta.signUpIsValid}
                     sx={{ marginLeft: '30%', marginRight: '30%', marginBottom: 2 }}
-                    onClick={() => { }}
+                    onClick={() => authenticate(isLogin, state, auth)}
                 >
                     {isLogin ? "Login" : "SignUp"}
                 </Button>
