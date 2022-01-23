@@ -9,84 +9,73 @@ import {
     Button,
     TextField,
     Stack,
-    Box
+    Box,
+    Alert,
+    AlertTitle,
+    Backdrop,
+    CircularProgress
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { validate, VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
+import { VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
 import { AuthContext } from './auth.context';
-import { authenticate } from './auth.functions';
-
-const initialState = {
-    email: {
-        value: '',
-        hasBeenFocused: false,
-        isValid: false
-    },
-    password: {
-        value: '',
-        hasBeenFocused: false,
-        isValid: false
-    },
-    name: {
-        value: '',
-        hasBeenFocused: false,
-        isValid: false
-    },
-    meta: {
-        loginIsValid: false,
-        signUpIsValid: false,
-    }
-};
-
-const formReducer = (state, action) => {
-    switch (action.type) {
-        case 'ON_CHANGE':
-            let loginIsValid = true;
-            let signUpIsValid = true;
-            const currentIsValid = validate(action.val, action.validators);            
-            for (const inputId in state) {
-                if (inputId !== 'meta') {
-                    if (inputId === action.inputId) {
-                        if (inputId !== 'name' && action.isLogin) {
-                            loginIsValid = loginIsValid && currentIsValid;
-                        }
-                        signUpIsValid = signUpIsValid && currentIsValid;
-                    } else {
-                        if (inputId !== 'name' && action.isLogin) {
-                            loginIsValid = loginIsValid && state[inputId].isValid;
-                        }
-                        signUpIsValid = signUpIsValid && state[inputId].isValid;
-                    }
-                }
-            }
-            return {
-                ...state,
-                [action.inputId]: {
-                    value: action.val,
-                    hasBeenFocused: true,
-                    isValid: currentIsValid
-                },
-                meta: {
-                    ...state.meta,
-                    loginIsValid,
-                    signUpIsValid
-                }
-            }
-        default:
-            return state;
-    }
-}
+import { initialState, formReducer } from './auth.functions';
 
 const AuthPage = props => {
 
     const [isLogin, setIsLogin] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
 
     const [state, dispatch] = useReducer(formReducer, initialState);
 
     const auth = useContext(AuthContext);
 
+    const authenticate = async (isLogin, state, auth) => {
+        if (isLogin) { //verifico se l'utente è loggato al fine di fare rispettivamente le operazioni di login o signup
+
+        } else {
+            setLoading(true);
+            try {
+                const response = await fetch('http://locomovolt.com:4000/api/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: state.name.value,
+                        email: state.email.value,
+                        password: state.password.value
+                    })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'An unexpected error occured. Please try again later!');
+                }
+                setLoading(false);
+                auth.login();
+            } catch (err) {
+                setLoading(false);
+                setError(err.message);
+                console.log('ERROR', err.message);
+            }
+        }
+    }
+
     return <div className="formContainer">
+        {
+            error && <Alert severity="error" onClose={() => setError(null)}>
+                <AlertTitle>Error</AlertTitle>
+                {error}
+            </Alert>
+        }
+        <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop>
         <Typography variant="h6" sx={{ padding: 3 }}>
             {isLogin ? "Login to the app" : "Signup"}
         </Typography>

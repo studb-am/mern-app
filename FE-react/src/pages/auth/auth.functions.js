@@ -1,24 +1,62 @@
-export const authenticate = async (isLogin, state, auth) => {
-    if (isLogin) { //verifico se l'utente è loggato al fine di fare rispettivamente le operazioni di login o signup
+import { validate } from '../../assets/validators';
 
-    } else {
-        try {
-            const response = await fetch('http://locomovolt.com:4000/api/users/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+export const formReducer = (state, action) => {
+    switch (action.type) {
+        case 'ON_CHANGE':
+            let loginIsValid = true;
+            let signUpIsValid = true;
+            const currentIsValid = validate(action.val, action.validators);            
+            for (const inputId in state) {
+                if (inputId !== 'meta') {
+                    if (inputId === action.inputId) {
+                        if (inputId !== 'name' && action.isLogin) {
+                            loginIsValid = loginIsValid && currentIsValid;
+                        }
+                        signUpIsValid = signUpIsValid && currentIsValid;
+                    } else {
+                        if (inputId !== 'name' && action.isLogin) {
+                            loginIsValid = loginIsValid && state[inputId].isValid;
+                        }
+                        signUpIsValid = signUpIsValid && state[inputId].isValid;
+                    }
+                }
+            }
+            return {
+                ...state,
+                [action.inputId]: {
+                    value: action.val,
+                    hasBeenFocused: true,
+                    isValid: currentIsValid
                 },
-                body: JSON.stringify({
-                    name: state.name.value,
-                    email: state.name.email,
-                    password: state.name.password
-                })
-            });
-            const data = await response.json();
-            console.log(data);
-            auth.login();
-        } catch (err) {
-            console.log('ERROR', err.message);
-        }
+                meta: {
+                    ...state.meta,
+                    loginIsValid,
+                    signUpIsValid
+                }
+            }
+        default:
+            return state;
     }
-}
+};
+
+export const initialState = {
+    email: {
+        value: '',
+        hasBeenFocused: false,
+        isValid: false
+    },
+    password: {
+        value: '',
+        hasBeenFocused: false,
+        isValid: false
+    },
+    name: {
+        value: '',
+        hasBeenFocused: false,
+        isValid: false
+    },
+    meta: {
+        loginIsValid: false,
+        signUpIsValid: false,
+    }
+};
