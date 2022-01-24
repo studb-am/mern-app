@@ -50,6 +50,13 @@ services:
     expose:
       -  "27017"
     entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+  gl-server:
+    container_name: "gl-server"
+    image: maptiler/tileserver-gl:latest
+    ports:
+      - 8080:80
+    volumes:
+      - /root/openmaptiles/data:/data
 
 volumes:
     mongo_data_1:
