@@ -32,10 +32,31 @@ const AuthPage = props => {
     const auth = useContext(AuthContext);
 
     const authenticate = async (isLogin, state, auth) => {
+        setLoading(true);
         if (isLogin) { //verifico se l'utente è loggato al fine di fare rispettivamente le operazioni di login o signup
+            try {
+                const response = await fetch('http://locomovolt.com:4000/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: state.email.value,
+                        password: state.password.value
+                    })
+                });
+                const data = await response.json();
 
+                if (!response.ok) {
+                    throw new Error(data.message || 'An unexpected error occured. Please try again later!');
+                }
+                setLoading(false);
+                auth.login();
+            } catch (err) {
+                setLoading(false);
+                setError(err.message);
+            }
         } else {
-            setLoading(true);
             try {
                 const response = await fetch('http://locomovolt.com:4000/api/users/signup', {
                     method: 'POST',
@@ -58,7 +79,6 @@ const AuthPage = props => {
             } catch (err) {
                 setLoading(false);
                 setError(err.message);
-                console.log('ERROR', err.message);
             }
         }
     }
