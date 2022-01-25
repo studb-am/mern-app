@@ -9,93 +9,56 @@ import {
     Button,
     TextField,
     Stack,
-    Box,
-    Alert,
-    AlertTitle,
-    Backdrop,
-    CircularProgress
+    Box
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+import AlertError from '../../components/alerts/alert-error.component';
+import Loading from '../../components/alerts/loading.component';
 import { VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
 import { AuthContext } from './auth.context';
 import { initialState, formReducer } from './auth.functions';
+import { useFetch } from '../../assets/custom-hooks';
 
 const AuthPage = props => {
 
     const [isLogin, setIsLogin] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
 
     const [state, dispatch] = useReducer(formReducer, initialState);
-
+    const { fetchRequest, loading, error, clearError } = useFetch();
     const auth = useContext(AuthContext);
 
-    const authenticate = async (isLogin, state, auth) => {
-        setLoading(true);
-        if (isLogin) { //verifico se l'utente è loggato al fine di fare rispettivamente le operazioni di login o signup
-            try {
-                const response = await fetch('http://locomovolt.com:4000/api/users/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: state.email.value,
-                        password: state.password.value
-                    })
-                });
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'An unexpected error occured. Please try again later!');
-                }
-                setLoading(false);
-                auth.login();
-            } catch (err) {
-                setLoading(false);
-                setError(err.message);
-            }
+    const authenticate = (isLogin, state, auth) => {
+        if (isLogin) {
+            fetchRequest(
+                'http://locomovolt.com:4000/api/users/login',
+                'POST',
+                { 'Content-Type': 'application/json' },
+                JSON.stringify({
+                    email: state.email.value,
+                    password: state.password.value
+                })
+            )
+                .then(data => auth.login());
         } else {
-            try {
-                const response = await fetch('http://locomovolt.com:4000/api/users/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: state.name.value,
-                        email: state.email.value,
-                        password: state.password.value
-                    })
-                });
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'An unexpected error occured. Please try again later!');
-                }
-                setLoading(false);
-                auth.login();
-            } catch (err) {
-                setLoading(false);
-                setError(err.message);
-            }
+            fetchRequest(
+                'http://locomovolt.com:4000/api/users/signup',
+                'POST',
+                { 'Content-Type': 'application/json' },
+                JSON.stringify({
+                    name: state.name.value,
+                    email: state.email.value,
+                    password: state.password.value
+                })
+            )
+                .then(data => auth.login());
         }
     }
 
     return <div className="formContainer">
-        {
-            error && <Alert severity="error" onClose={() => setError(null)}>
-                <AlertTitle>Error</AlertTitle>
-                {error}
-            </Alert>
-        }
-        <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-        >
-            <CircularProgress color="inherit" />
-        </Backdrop>
+        { error && <AlertError onClose={clearError} error={error} /> }
+        <Loading loading={loading} />
         <Typography variant="h6" sx={{ padding: 3 }}>
             {isLogin ? "Login to the app" : "Signup"}
         </Typography>

@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react';
-import { Box, TextField, Typography, Button } from '@mui/material';
+import React, { useState, useReducer } from 'react';
+import { Box, TextField, Typography, Button, Stack } from '@mui/material';
 import './form.css';
 
 import {
@@ -8,11 +8,21 @@ import {
   VALIDATOR_MINLENGTH,
 } from '../../assets/validators';
 
+import MapLocationPicker from '../mapModals/mapLocationPicker.component';
+
 const formReducer = (state, action) => {
   switch (action.type) {
     case 'ON_CHANGE':
       let formIsValid = true;
-      const currentIsValid = validate(action.val, action.validators);
+      let currentIsValid = false;
+      if (action.inputId === 'location') {
+        if (action.val && action.val.lat && action.val.lng) {
+          console.log(action.val);
+          currentIsValid = true
+        }
+      } else {
+        currentIsValid = validate(action.val, action.validators);
+      }
       for (const inputId in state) {
         if (inputId !== 'meta') {
           if (inputId === action.inputId) {
@@ -33,7 +43,7 @@ const formReducer = (state, action) => {
           ...state.meta,
           isValid: formIsValid
         }
-        
+
       };
     default:
       return state;
@@ -41,8 +51,11 @@ const formReducer = (state, action) => {
 };
 
 const Form = props => {
-  const {initialState, action} = props
+
+  const { initialState, action } = props
   const [state, dispatch] = useReducer(formReducer, initialState);
+
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   const formHandler = event => {
     event.preventDefault();
@@ -107,15 +120,36 @@ const Form = props => {
               validators: [VALIDATOR_MINLENGTH(5)],
             })}
         />
+        {action === 'new-place' && <Stack direction="row" spacing={10} sx={{ marginTop: '2%', alignItems: 'center', marginLeft: '10%'}}>
+          <Button
+            variant="text"
+            onClick={() => setIsMapOpen(true)}
+          >Pick up the location
+          </Button>
+          {state.location.value && <p>LATITUDE: {state.location.value.lat}; LONGITUDE: {state.location.value.lng} </p>}
+        </Stack>}
         <Button
           variant="contained"
           disabled={!state.meta.isValid}
-          sx={{ marginLeft: '30%', marginRight: '30%' }}
+          sx={{ marginLeft: '41%', marginRight: '30%', marginTop: '3%' }}
           onClick={formHandler}
         >
           {action === 'new-place' ? "Add new place" : "Save changes"}
         </Button>
       </Box>
+      <MapLocationPicker
+        open={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        title={state.title.value}
+        onLocationChange={currLoc => {
+          dispatch({
+            type: 'ON_CHANGE',
+            val: currLoc,
+            inputId: 'location',
+            validators: []
+          })
+        }}
+      />
     </div>
   );
 };

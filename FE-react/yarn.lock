@@ -6449,10 +6449,10 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-open-map-gl@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/open-map-gl/-/open-map-gl-0.0.0.tgz#b5e82375dd31a6d4a604f3402e4b391988472616"
-  integrity sha512-fbBNvKUizT316a5TRf/NxR3ih3BASD1eTUL7UkiJS58eQA0RmLsqTn7vXAKkFZksSXzzsaRY1Bgew43MKUKdtQ==
+open-map-gl@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/open-map-gl/-/open-map-gl-0.0.2.tgz#572049f72c997e33628f81ee588be25f1040d69c"
+  integrity sha512-b8bWwJLs0NrcQrE3MO5k6VY84S3ZV4fErcFYp625qFV/rb+tYoh/uIgq2+CbNXU5asq4omN5VApvfsX+d7hvUg==
   dependencies:
     maplibre-gl "^2.0.4"
 

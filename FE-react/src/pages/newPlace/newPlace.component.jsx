@@ -13,6 +13,10 @@ const initialState = {
     hasBeenFocused: false,
     isValid: false,
   },
+  location: {
+    value: null,
+    isValid: false
+  },
   meta: {
     isValid: false,
   }

@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import UsersPage from "./users.component";
-import { DUMMY_USERS } from './users.data';
+import AlertError from "../../components/alerts/alert-error.component";
+import Loading from "../../components/alerts/loading.component";
+import { useFetch } from "../../assets/custom-hooks";
 
 const UsersPageContainer = props => {
-    return <UsersPage {...props} users={DUMMY_USERS} />
+
+    const [users, setUsers] = useState([]);
+    const {fetchRequest, loading, error, clearError} = useFetch();
+
+    useEffect(() => {
+        fetchRequest('http://locomovolt.com:4000/api/users')
+        .then(data => setUsers(data.users));
+    }, [fetchRequest]);
+
+    if (error) {
+        return <AlertError onClose={clearError} error={error} />
+    }
+
+    if (loading) {
+        return <Loading loading={loading} />
+    }
+
+    return <UsersPage {...props} users={users} />
 }
 
 export default UsersPageContainer;

@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import { modalStyle } from './placeItem.styles';
-import MapModal from '../mapModal/mapModal.component';
+import MapModal from '../mapModals/mapModal.component';
 import { AuthContext } from '../../pages/auth/auth.context';
 
 const PlaceItem = props => {

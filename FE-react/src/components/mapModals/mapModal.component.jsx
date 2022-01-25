@@ -22,7 +22,7 @@ const MapModal = props => {
           <Map
             centerCoords={{ lat: location.lat, lng: location.lng }}
             initialZoom={14}
-            mapStyle='http://locomovolt.com:8080/styles/basic-preview/style.json'
+            mapStyle={process.env.REACT_APP_MAP_STYLE}
             mapClassName="map"
             mapContainerClassName="map-wrap"
             minZoom={9}
