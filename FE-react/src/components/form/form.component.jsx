@@ -1,5 +1,7 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useContext } from 'react';
 import { Box, TextField, Typography, Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
 import './form.css';
 
 import {
@@ -9,6 +11,8 @@ import {
 } from '../../assets/validators';
 
 import MapLocationPicker from '../mapModals/mapLocationPicker.component';
+import { AuthContext } from '../../pages/auth/auth.context';
+import { useMutateData } from '../../assets/custom-hooks';
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -54,11 +58,30 @@ const Form = props => {
   const { initialState, action } = props
   const [state, dispatch] = useReducer(formReducer, initialState);
 
+  const auth = useContext(AuthContext);
   const [isMapOpen, setIsMapOpen] = useState(false);
+
+  const [mutateData, {loading, error}] = useMutateData();
+  const navigateTo = useNavigate();
 
   const formHandler = event => {
     event.preventDefault();
-    console.log(state);
+    const newPlace = {
+      title: state.title.value,
+      description: state.description.value,
+      imageUrl: 'http://test.com',
+      coordinates: state.location.value,
+      creator: auth.userId
+    }
+    mutateData({
+      url: 'http://locomovolt.com:4000/api/places',
+      body: JSON.stringify(newPlace)
+    })
+    .then(data => {
+      console.log('Data successfully inserted');
+      navigateTo('/');
+    });
+
   };
 
   return (

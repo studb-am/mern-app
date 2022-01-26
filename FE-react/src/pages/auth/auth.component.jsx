@@ -38,10 +38,7 @@ const AuthPage = props => {
                     password: state.password.value
                 })
             })
-                .then(data => {
-                    console.log('data', data);
-                    auth.login();
-                });
+                .then(data => auth.login(data.user._id));
         } else {
             mutateData({
                 url: 'http://locomovolt.com:4000/api/users/signup',
@@ -51,7 +48,7 @@ const AuthPage = props => {
                     password: state.password.value
                 })
             })
-                .then(data => auth.login());
+                .then(data => auth.login(data.user._id));
         }
     }
 
