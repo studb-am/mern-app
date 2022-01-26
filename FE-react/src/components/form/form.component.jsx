@@ -17,7 +17,6 @@ const formReducer = (state, action) => {
       let currentIsValid = false;
       if (action.inputId === 'location') {
         if (action.val && action.val.lat && action.val.lng) {
-          console.log(action.val);
           currentIsValid = true
         }
       } else {

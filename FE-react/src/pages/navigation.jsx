@@ -15,11 +15,20 @@ import { theme } from '../assets/util';
 
 const Navigator = props => {
   const [userIsLogged, setUserIsLogged] = useState(false);
-  const login = useCallback(() => setUserIsLogged(true), []);
-  const logout = useCallback(() => { console.log('loggedOut'); setUserIsLogged(false) }, []);
+  const [userId, setUserId] = useState(null);
+  const login = useCallback((uid) => {
+    setUserIsLogged(true);
+    setUserId(uid);
+    console.log('logged In!');
+  }, []);
+  const logout = useCallback(() => { 
+    console.log('logged Out'); 
+    setUserIsLogged(false);
+    setUserId(null);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ userIsLogged, login, logout }}>
+    <AuthContext.Provider value={{ userIsLogged, login, logout, userId }}>
       <ThemeProvider theme={theme}>
         <Router>
           <Header />

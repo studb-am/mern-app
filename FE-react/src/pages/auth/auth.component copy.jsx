@@ -18,7 +18,7 @@ import Loading from '../../components/alerts/loading.component';
 import { VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
 import { AuthContext } from './auth.context';
 import { initialState, formReducer } from './auth.functions';
-import { useMutateData } from '../../assets/custom-hooks';
+import { useFetch } from '../../assets/custom-hooks';
 
 const AuthPage = props => {
 
@@ -26,37 +26,38 @@ const AuthPage = props => {
     const [showPassword, setShowPassword] = useState(false);
 
     const [state, dispatch] = useReducer(formReducer, initialState);
-    const [mutateData, { loading, error, clearError }] = useMutateData();
+    const { fetchRequest, loading, error, clearError } = useFetch();
     const auth = useContext(AuthContext);
 
     const authenticate = (isLogin, state, auth) => {
         if (isLogin) {
-            mutateData({
-                url: 'http://locomovolt.com:4000/api/users/login',
-                body: JSON.stringify({
+            fetchRequest(
+                'http://locomovolt.com:4000/api/users/login',
+                'POST',
+                { 'Content-Type': 'application/json' },
+                JSON.stringify({
                     email: state.email.value,
                     password: state.password.value
                 })
-            })
-                .then(data => {
-                    console.log('data', data);
-                    auth.login();
-                });
+            )
+                .then(data => auth.login());
         } else {
-            mutateData({
-                url: 'http://locomovolt.com:4000/api/users/signup',
-                body: JSON.stringify({
+            fetchRequest(
+                'http://locomovolt.com:4000/api/users/signup',
+                'POST',
+                { 'Content-Type': 'application/json' },
+                JSON.stringify({
                     name: state.name.value,
                     email: state.email.value,
                     password: state.password.value
                 })
-            })
+            )
                 .then(data => auth.login());
         }
     }
 
     return <div className="formContainer">
-        {error && <AlertError onClose={clearError} error={error} />}
+        { error && <AlertError onClose={clearError} error={error} /> }
         <Loading loading={loading} />
         <Typography variant="h6" sx={{ padding: 3 }}>
             {isLogin ? "Login to the app" : "Signup"}
