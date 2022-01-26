@@ -50,7 +50,7 @@ const createPlace = async (req, res, next) => {
 	    location: coordinates,
 	    creator
     });
-
+   
    let user;
    try {
 	user = await User.findById(creator);
@@ -68,6 +68,7 @@ const createPlace = async (req, res, next) => {
 	await placeToCreate.save({session: currSession});
 	await user.places.push(placeToCreate); 
 	await user.save({session: currSession});
+	   console.log(user);
 	await currSession.commitTransaction();
     } catch(err) {
 	    return next(new HttpError(err.message, 500));

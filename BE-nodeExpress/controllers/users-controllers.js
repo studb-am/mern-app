@@ -40,7 +40,7 @@ const signUp = async (req, res, next) => {
 	return next(new HttpError(err.message, 422));
     }
 
-    res.status(201).json({ createdUser: userToCreate })
+    res.status(201).json({ user: userToCreate })
 
 }
 
@@ -58,7 +58,7 @@ const login = async (req, res, next) => {
         return next(new HttpError('Login failed! Invalid Credential', 500));
     }
 
-    res.status(200).json({message: 'Successfully logged in!'});
+    res.status(200).json({user: existingUser});
 
 }
 
