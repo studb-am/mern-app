@@ -8,6 +8,7 @@ services:
       - 4000:4000
     volumes:
       - "/root/projects/mern-app/BE-nodeExpress:/usr/src"
+      - "/root/project-imgs:/usr/imgs"
     environment:
       - NODE_ENV=development
     env_file:
