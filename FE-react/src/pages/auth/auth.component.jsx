@@ -30,8 +30,6 @@ const AuthPage = props => {
     const [mutateData, { loading, error, clearError }] = useMutateData();
     const auth = useContext(AuthContext);
 
-    console.log(state);
-
     const authenticate = (isLogin, state, auth) => {
         if (isLogin) {
             mutateData({
