@@ -116,7 +116,7 @@ const deletePlace = async (req, res, next) => {
 	return next(new HttpError(err.message, 500));
     }
     
-    res.status(200).json({ message: `Place with id:${placeId} deleted!` });
+    res.status(200).json({ deletedPlace: placeToDelete, message: `Place with id:${placeId} deleted!` });
 }
 
 module.exports = {
