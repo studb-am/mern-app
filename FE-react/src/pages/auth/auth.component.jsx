@@ -18,6 +18,7 @@ import Loading from '../../components/alerts/loading.component';
 import { VALIDATOR_REQUIRE, VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from '../../assets/validators';
 import { AuthContext } from './auth.context';
 import { initialState, formReducer } from './auth.functions';
+import ImagePicker from '../../components/imagePicker/imagePicker.component';
 import { useMutateData } from '../../assets/custom-hooks';
 
 const AuthPage = props => {
@@ -28,6 +29,8 @@ const AuthPage = props => {
     const [state, dispatch] = useReducer(formReducer, initialState);
     const [mutateData, { loading, error, clearError }] = useMutateData();
     const auth = useContext(AuthContext);
+
+    console.log(state);
 
     const authenticate = (isLogin, state, auth) => {
         if (isLogin) {
@@ -91,6 +94,21 @@ const AuthPage = props => {
                         validators: [VALIDATOR_REQUIRE()],
                     })}
             />}
+            {!isLogin && <Stack
+                direction="column"
+                sx={{ m: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                <ImagePicker id="image" center onInputLoad={(file) => {
+                    dispatch({
+                        type: 'ON_CHANGE',
+                        inputId: 'image',
+                        val: file,
+                        isLogin: isLogin,
+                        validators: []
+                    })
+                }}/>
+            </Stack>
+
+            }
             <TextField
                 id="email"
                 label="Email"
