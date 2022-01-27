@@ -4,7 +4,7 @@ const User = require('../models/user');
 const getUsers = async (req, res, next) => {
     let users;	
     try {
-	users = await User.find({}, {email: 1, name: 1, places: 1});
+	users = await User.find({}, {email: 1, name: 1, places: 1, image: 1});
     } catch (err) {
 	return next(new HttpError(err.messge, 500));
     }
@@ -12,7 +12,7 @@ const getUsers = async (req, res, next) => {
 }
 
 const signUp = async (req, res, next) => {
-    const {name, email, password, image} = req.body;
+    const {name, email, password } = req.body;
     
     //Check 1: verify that the email has never been used
     let exsistingUser;
@@ -30,7 +30,7 @@ const signUp = async (req, res, next) => {
 	name,
 	email,
 	password,
-	image,
+	image: req.file.path,
 	places: []
     });
 

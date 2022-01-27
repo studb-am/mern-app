@@ -1,5 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
 const HttpError = require('./models/http-error');
 
 const placesRoutes = require('./routes/places-routes');
@@ -8,6 +11,8 @@ const usersRoutes = require('./routes/users-routes');
 const app = express();
 
 app.use(express.json());
+
+app.use('/usr/imgs',express.static(path.join(__dirname,'../imgs')));
 
 //Configurazione iniziale che ci permette di lavorare con la CORS policy lato browser
 app.use((req, res, next) => {
@@ -26,6 +31,11 @@ app.use((req, res, next) => {
 })
 
 app.use((error, req, res, next) => {
+    if (req.file) {
+	fs.unlink(req.file.path, err => {
+		console.log(err);
+	})
+    }
     if (res.headerSent) {
         return next(error);
     }

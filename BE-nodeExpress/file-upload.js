@@ -5,7 +5,7 @@ const fileUpload = multer({
 	limits: 500000,
 	storage: multer.diskStorage({
 		destination: (req, file, cb) => {
-			cb(null, '../imgs')
+			cb(null, '/usr/imgs')
 		},
 		filename: (req, file, cb) => {
 			const ext = file.mimetype.split('/')[1];
