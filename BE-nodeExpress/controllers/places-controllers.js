@@ -20,7 +20,7 @@ const getPlacesByUserId = async (req, res, next) => {
         return;
     }
 
-    res.status(200).json({ data: places.map(place => place.toObject({ getters: true })) });
+    res.status(200).json({ places: places.map(place => place.toObject({ getters: true })) });
 }
 
 const getPlaceByPlaceId = async (req, res, next) => {
@@ -37,7 +37,7 @@ const getPlaceByPlaceId = async (req, res, next) => {
         return next(new HttpError('Could not find a place for the provided Id', 404));
     }
 
-    res.status(200).json({ data: place.toObject({ getters: true }) });
+    res.status(200).json({ place: place.toObject({ getters: true }) });
 }
 
 const createPlace = async (req, res, next) => {
