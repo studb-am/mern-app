@@ -43,13 +43,15 @@ const AuthPage = props => {
             })
                 .then(data => auth.login(data.user._id));
         } else {
+            const formData = new FormData();
+            formData.append('name', state.name.value);
+            formData.append('email', state.email.value);
+            formData.append('password', state.password.value);
+            formData.append('image', state.image.value)
             mutateData({
                 url: 'http://locomovolt.com:4000/api/users/signup',
-                body: JSON.stringify({
-                    name: state.name.value,
-                    email: state.email.value,
-                    password: state.password.value
-                })
+                body: formData,
+                headers: {}
             })
                 .then(data => auth.login(data.user._id));
         }
