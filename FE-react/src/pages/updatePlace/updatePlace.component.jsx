@@ -16,6 +16,10 @@ const UpdatePlacePage = props => {
           hasBeenFocused: false,
           isValid: true,
         },
+        location: {
+          value: selectedPlace.location,
+          isValid: true
+        },
         meta: {
             placeId: selectedPlace.id,
             isValid: true

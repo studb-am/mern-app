@@ -77,7 +77,7 @@ export const useFetchData = (url, body=null, method = 'GET', headers = {}) => {
     return { data, loading, error, clearError };
 }
 
-export const useMutateData = (method = 'POST', headers = { 'Content-Type': 'application/json' }) => {
+export const useMutateData = (headers = { 'Content-Type': 'application/json' }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -87,7 +87,7 @@ export const useMutateData = (method = 'POST', headers = { 'Content-Type': 'appl
         setError(null);
     }
 
-    const mutateData = useCallback((variables) => fetchBase({ setLoading, setError, method, headers, ...variables }), []);
+    const mutateData = useCallback((variables, method='POST') => fetchBase({ setLoading, setError, method, headers, ...variables }), []);
     
     useEffect(() => {
         return () => {

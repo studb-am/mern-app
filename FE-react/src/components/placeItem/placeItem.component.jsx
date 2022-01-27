@@ -17,16 +17,11 @@ import MapModal from '../mapModals/mapModal.component';
 import { AuthContext } from '../../pages/auth/auth.context';
 
 const PlaceItem = props => {
-  const { id, title, description, location, imageUrl } = props;
+  const { id, title, description, location, imageUrl, onDeletePlace } = props;
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isDelOpen, setIsDelOpen] = useState(false);
 
   const auth = useContext(AuthContext);
-
-  const deletePlaceItem = () => {
-    setIsDelOpen(false);
-    console.log('DELETING....');
-  }
 
   return (
     <Card sx={{ width: '100%', maxWidth: 450, marginBottom: 4 }}>
@@ -60,7 +55,10 @@ const PlaceItem = props => {
           <p>By confirming the operation, you will no longer able to see delete data</p>
           <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
             <Button onClick={() => setIsDelOpen(false)} variant="outlined">No</Button>
-            <Button onClick={deletePlaceItem} variant="contained">Yes</Button>
+            <Button onClick={() => {
+              setIsDelOpen(false);
+              onDeletePlace(id);
+            }} variant="contained">Yes</Button>
           </Stack>
         </Box>
       </Modal>

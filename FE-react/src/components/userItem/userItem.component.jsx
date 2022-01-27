@@ -6,9 +6,10 @@ import { cardStyle, avatarStyle } from './userItem.styles';
 
 const UserItem = props => {
   const { user } = props;
+
   return (
-    <Card variant="outlined" sx={cardStyle} key={user.id}>
-      <Link to={`/${user.id}/places`} style={{ color: 'inherit', textDecoration: 'none' }}>
+    <Card variant="outlined" sx={cardStyle} key={user._id}>
+      <Link to={`/places/user/${user._id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
         <CardActionArea>
           <CardHeader
             avatar={<Avatar src={user.imageUrl} sx={avatarStyle} />}

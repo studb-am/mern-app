@@ -11,6 +11,7 @@ import {
 } from '../../assets/validators';
 
 import MapLocationPicker from '../mapModals/mapLocationPicker.component';
+import AlertError from '../alerts/alert-error.component';
 import { AuthContext } from '../../pages/auth/auth.context';
 import { useMutateData } from '../../assets/custom-hooks';
 
@@ -61,10 +62,11 @@ const Form = props => {
   const auth = useContext(AuthContext);
   const [isMapOpen, setIsMapOpen] = useState(false);
 
-  const [mutateData, {loading, error}] = useMutateData();
+  const [mutateData, { error, clearError }] = useMutateData();
   const navigateTo = useNavigate();
 
   const formHandler = event => {
+
     event.preventDefault();
     const newPlace = {
       title: state.title.value,
@@ -73,19 +75,33 @@ const Form = props => {
       coordinates: state.location.value,
       creator: auth.userId
     }
-    mutateData({
-      url: 'http://locomovolt.com:4000/api/places',
-      body: JSON.stringify(newPlace)
-    })
-    .then(data => {
-      console.log('Data successfully inserted');
-      navigateTo('/');
-    });
 
-  };
+    if (action === 'new-place') {
+      mutateData({
+        url: 'http://locomovolt.com:4000/api/places',
+        body: JSON.stringify(newPlace)
+      })
+        .then(data => {
+          console.log('Data successfully inserted');
+          navigateTo('/');
+        });
+
+    } else {
+      mutateData({
+        url: `http://locomovolt.com:4000/api/places/place/${state.meta.placeId}`,
+        body: JSON.stringify(newPlace)
+      }, 'PATCH')
+        .then(data => {
+          console.log('Successfully updated!');
+          navigateTo(`/places/user/${auth.userId}`);
+        })
+    }
+  }
+
 
   return (
     <div className="formContainer">
+      {error && <AlertError error={error} onClose={clearError} />}
       <Typography variant="h6" sx={{ padding: 3 }}>
         {action === "new-place" ? "Insert information to add a new place" : "Edit information of the existing place"}
       </Typography>
@@ -142,7 +158,7 @@ const Form = props => {
               validators: [VALIDATOR_MINLENGTH(5)],
             })}
         />
-        {action === 'new-place' && <Stack direction="row" spacing={10} sx={{ marginTop: '2%', alignItems: 'center', marginLeft: '10%'}}>
+        {action === 'new-place' && <Stack direction="row" spacing={10} sx={{ marginTop: '2%', alignItems: 'center', marginLeft: '10%' }}>
           <Button
             variant="text"
             onClick={() => setIsMapOpen(true)}

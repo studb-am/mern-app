@@ -35,7 +35,7 @@ const Navigator = props => {
           <Routes>
             <Route path="/" exact element={<HomePage />} />
             <Route path="/users" exact element={<UsersPage />} />
-            <Route path="/:userId/places" exact element={<UserPlacesPage />} />
+            <Route path="/places/user/:userId" exact element={<UserPlacesPage />} />
             <Route path="/new-place" exact element={<PrivateRoute />}>
               <Route path="/new-place" exact element={<NewPlacePage />} />
             </Route>
