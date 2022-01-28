@@ -10,12 +10,12 @@ export const formReducer = (state, action) => {
             for (const inputId in state) {
                 if (inputId !== 'meta') {
                     if (inputId === action.inputId) {
-                        if ((inputId !== 'name' || inputId !== 'image') && action.isLogin) {
+                        if ((inputId !== 'name' && inputId !== 'image') && action.isLogin) {
                             loginIsValid = loginIsValid && currentIsValid;
                         }
                         signUpIsValid = signUpIsValid && currentIsValid;
                     } else {
-                        if ((inputId !== 'name' || inputId !== 'image') && action.isLogin) {
+                        if ((inputId !== 'name' && inputId !== 'image') && action.isLogin) {
                             loginIsValid = loginIsValid && state[inputId].isValid;
                         }
                         signUpIsValid = signUpIsValid && state[inputId].isValid;

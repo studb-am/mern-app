@@ -140,7 +140,7 @@ const AuthPage = props => {
                         val: evt.target.value,
                         inputId: 'password',
                         isLogin: isLogin,
-                        validators: [VALIDATOR_MINLENGTH(5)]
+                        validators: [VALIDATOR_MINLENGTH(6)]
                     })}
                     endAdornment={
                         <InputAdornment position="end">

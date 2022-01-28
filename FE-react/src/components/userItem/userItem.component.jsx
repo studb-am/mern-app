@@ -12,7 +12,7 @@ const UserItem = props => {
       <Link to={`/places/user/${user._id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
         <CardActionArea>
           <CardHeader
-            avatar={<Avatar src={user.imageUrl} sx={avatarStyle} />}
+            avatar={<Avatar src={`${process.env.REACT_APP_HOST_API}${user.image}`} sx={avatarStyle} />}
             title={user.name}
             subheader={`places: ${user.places.length}`}
             sx={{ width: 200 }}
