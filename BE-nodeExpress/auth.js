@@ -3,8 +3,12 @@ const jwt = require('jsonwebtoken');
 const HttpError = require('./models/http-error');
 
 module.exports = (req, res, next) => {
+	if (req.method === 'OPTIONS') {
+		return next();
+	}
+	
 	try {
-		const token = req.headers.authentication?.split(' ')[1]; //convenzione vuole che il token sia del tipo 'Bearer <TOKEN>' per questo utilizziamo lo split e poi prendiamo il secondo elemento, ovvero il token
+		const token = req.headers.authorization?.split(' ')[1]; //convenzione vuole che il token sia del tipo 'Bearer <TOKEN>' per questo utilizziamo lo split e poi prendiamo il secondo elemento, ovvero il token
 		if (!token) {
 			throw new Error('Authentication failed');
 		}
