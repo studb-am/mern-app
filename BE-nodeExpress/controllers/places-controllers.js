@@ -43,7 +43,7 @@ const getPlaceByPlaceId = async (req, res, next) => {
 
 const createPlace = async (req, res, next) => {
     const { title, description, creator, coordinates } = req.body;
-    
+   
     const placeToCreate = new Place({
 	    title,
 	    description,
@@ -62,7 +62,8 @@ const createPlace = async (req, res, next) => {
    if (!user) {
 	return next(new HttpError('Could not find the user provided. Please try again with a valid user!', 422));
    }
-   //nota: va capito come configurare le repliche per poter utilizzare le transazioni di mongo ed evitare l'errore "Transaction numbers are only allowed on a replica set member or mongos"
+    	
+   //nota va capito come avviare il primary Mongo con le 2 repliche e settare la password
    try {
 	const currSession = await mongoose.startSession();
 	currSession.startTransaction();
@@ -88,6 +89,10 @@ const updatePlace = async (req, res, next) => {
 	return next(new HttpError(err.message, 500));
     }
 
+    if (placeToUpdate.creator.toString() !== req.userData.userId) {
+	return next(new HttpError('You are not allowed to edit the file because you dit not create it!',401));
+    }	
+
     placeToUpdate.title = title;
     placeToUpdate.description = description;
 
@@ -108,6 +113,11 @@ const deletePlace = async (req, res, next) => {
     try {
 	placeToDelete = await Place.findById(placeId).populate('creator');
 	placeImage = placeToDelete.imageUrl;
+
+	if (placeToDelete.creator._id.toString() !== req.userData.userId) {
+		throw new Error('You are not allowed to delete the file because you did not create it!, 401');
+	}
+
 	const currSession = await mongoose.startSession();
 	await currSession.startTransaction();
 	await placeToDelete.remove({session: currSession});
