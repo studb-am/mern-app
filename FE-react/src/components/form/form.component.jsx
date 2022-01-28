@@ -72,15 +72,15 @@ const Form = props => {
 
     event.preventDefault();
     const formData = new FormData();
+
     if (action === 'new-place') {
+
       formData.append('title', state.title.value);
       formData.append('description', state.description.value);
       formData.append('imageUrl', state.imageUrl.value);
       formData.append('coordinates', JSON.stringify(state.location.value));
       formData.append('creator', auth.userId);
-    }
 
-    if (action === 'new-place') {
       mutateData({
         url: 'http://locomovolt.com:4000/api/places',
         body: formData,
@@ -176,6 +176,7 @@ const Form = props => {
           direction="column"
           sx={{ m: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ImagePicker id="image" center onInputLoad={(file) => {
+            console.log(file);
             dispatch({
               type: 'ON_CHANGE',
               inputId: 'imageUrl',

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 
@@ -13,19 +13,49 @@ import PrivateRoute from '../components/privateRoute/privateRoute.component';
 import { AuthContext } from './auth/auth.context';
 import { theme } from '../assets/util';
 
+let timeoutLogger;
+
 const Navigator = props => {
   const [token, setToken] = useState(null);
+  const [expDate, setExpDate] = useState(null);
   const [userId, setUserId] = useState(null);
-  const login = useCallback((uid, currToken) => {
+
+  const login = useCallback((uid, currToken, expirationDate) => {
     setUserId(uid);
     setToken(currToken);
+    const newExpDate = expirationDate || new Date(new Date.getTime() + 1000 * 60 * 60).toISOString();
+    setExpDate(newExpDate);
+    localStorage.setItem('userData', JSON.stringify({
+      userId: uid,
+      token: currToken,
+      expirationDate: newExpDate
+    }));
     console.log('logged In!');
   }, []);
   const logout = useCallback(() => { 
     console.log('logged Out'); 
+    localStorage.removeItem('userData');
     setToken(null);
+    setExpDate(null);
     setUserId(null);
   }, []);
+
+  //Auto-login: controllo la presenza di un token valido
+  useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
+    if (storedUserData?.token && new Date(storedUserData.expirationDate) > new Date()) {
+      login(storedUserData.userId, storedUserData.token, storedUserData.expirationDate);
+    }
+  }, []);
+  useEffect(() => {
+    if (expDate && token) {
+      const remainingTime = new Date(expDate).getTime() - new Date().getTime();
+      timeoutLogger = setTimeout(logout, remainingTime);
+    } else {
+      clearTimeout(timeoutLogger)
+    }
+    
+  },[token, expDate])
 
   return (
     <AuthContext.Provider value={{ userIsLogged: !!token, login, logout, userId, token }}>
