@@ -39,7 +39,7 @@ const AuthPage = props => {
                     password: state.password.value
                 })
             })
-                .then(data => auth.login(data.user._id));
+                .then(user => auth.login(user.userId, user.token));
         } else {
             const formData = new FormData();
             formData.append('name', state.name.value);
@@ -51,7 +51,7 @@ const AuthPage = props => {
                 body: formData,
                 headers: {}
             })
-                .then(data => auth.login(data.user._id));
+                .then(user => auth.login(user.userId, user.token));
         }
     }
 

@@ -82,7 +82,9 @@ const Form = props => {
       mutateData({
         url: 'http://locomovolt.com:4000/api/places',
         body: formData,
-        headers: {}
+        headers: {
+          Authorization: `Bearer ${auth.token}`
+        }
       })
         .then(data => {
           console.log('Data successfully inserted');

@@ -14,21 +14,21 @@ import { AuthContext } from './auth/auth.context';
 import { theme } from '../assets/util';
 
 const Navigator = props => {
-  const [userIsLogged, setUserIsLogged] = useState(false);
+  const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  const login = useCallback((uid) => {
-    setUserIsLogged(true);
+  const login = useCallback((uid, currToken) => {
     setUserId(uid);
+    setToken(currToken);
     console.log('logged In!');
   }, []);
   const logout = useCallback(() => { 
     console.log('logged Out'); 
-    setUserIsLogged(false);
+    setToken(null);
     setUserId(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userIsLogged, login, logout, userId }}>
+    <AuthContext.Provider value={{ userIsLogged: !!token, login, logout, userId, token }}>
       <ThemeProvider theme={theme}>
         <Router>
           <Header />
@@ -42,7 +42,7 @@ const Navigator = props => {
             <Route path="/update-place/:placeId" exact element={<PrivateRoute />}>
               <Route path="/update-place/:placeId" exact element={<UpdatePlacePage />} />
             </Route>
-            <Route path="/authenticate" exact element={userIsLogged ? <Navigate to="/" /> : <AuthPage />} />
+            <Route path="/authenticate" exact element={!!token ? <Navigate to="/" /> : <AuthPage />} />
             <Route path="*" element={<h2>Nothing found</h2>} />
           </Routes>
         </Router>
