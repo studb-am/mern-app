@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useMediaQuery } from '@mui/material';
 
 import PlaceItem from '../../components/placeItem/placeItem.component';
 import { IS_MOBILE_SMALL_VIEW_DEF } from '../../assets/util';
 import { useMutateData } from '../../assets/custom-hooks';
+import { AuthContext } from '../auth/auth.context';
 
 
 
@@ -14,9 +15,15 @@ const UserPlacesPage = props => {
 
     const [mutateData, { error, clearError }] = useMutateData();
 
+    const auth = useContext(AuthContext);
+
     const deletePlaceItem = (placeId) => {
         mutateData({
-            url: `http://locomovolt.com:4000/api/places/place/${placeId}`
+            url: `http://locomovolt.com:4000/api/places/place/${placeId}`,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${auth.token}`
+            }
         }, 'DELETE')
             .then(data => {
                 console.log(data.message);
