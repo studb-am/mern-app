@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const HttpError = require('../models/http-error');
 const Place = require('../models/place');
@@ -103,8 +104,10 @@ const deletePlace = async (req, res, next) => {
     const placeId = req.params.placeId;
 
     let placeToDelete;
+    let placeImage;
     try {
 	placeToDelete = await Place.findById(placeId).populate('creator');
+	placeImage = placeToDelete.imageUrl;
 	const currSession = await mongoose.startSession();
 	await currSession.startTransaction();
 	await placeToDelete.remove({session: currSession});
@@ -114,8 +117,11 @@ const deletePlace = async (req, res, next) => {
     } catch(err) {
 	return next(new HttpError(err.message, 500));
     }
-    
-    res.status(200).json({ deletedPlace: placeToDelete, message: `Place with id:${placeId} deleted!` });
+    //cancello l'immagine di riferimento
+    fs.unlink(placeImage, err => {
+	if(err) console.log(err);    
+        res.status(200).json({ deletedPlace: placeToDelete, message: `Place with id:${placeId} deleted!` });
+    });
 }
 
 module.exports = {
