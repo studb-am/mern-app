@@ -25,7 +25,7 @@ const PlaceItem = props => {
 
   return (
     <Card sx={{ width: '100%', maxWidth: 450, marginBottom: 4 }}>
-      <CardMedia component="img" height="140" image={imageUrl} alt={title} />
+      <CardMedia component="img" height="140" image={`${process.env.REACT_APP_HOST_API}${imageUrl}`} alt={title} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {title}

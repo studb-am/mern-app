@@ -13,6 +13,7 @@ import {
 import MapLocationPicker from '../mapModals/mapLocationPicker.component';
 import AlertError from '../alerts/alert-error.component';
 import { AuthContext } from '../../pages/auth/auth.context';
+import ImagePicker from '../imagePicker/imagePicker.component';
 import { useMutateData } from '../../assets/custom-hooks';
 
 const formReducer = (state, action) => {
@@ -22,8 +23,10 @@ const formReducer = (state, action) => {
       let currentIsValid = false;
       if (action.inputId === 'location') {
         if (action.val && action.val.lat && action.val.lng) {
-          currentIsValid = true
+          currentIsValid = true;
         }
+      } else if(action.inputId === 'imageUrl' && action.val) {
+        currentIsValid = true;
       } else {
         currentIsValid = validate(action.val, action.validators);
       }
@@ -68,18 +71,18 @@ const Form = props => {
   const formHandler = event => {
 
     event.preventDefault();
-    const newPlace = {
-      title: state.title.value,
-      description: state.description.value,
-      imageUrl: 'http://test.com',
-      coordinates: state.location.value,
-      creator: auth.userId
-    }
+    const formData = new FormData();
+    formData.append('title', state.title.value);
+    formData.append('description', state.description.value);
+    formData.append('imageUrl', state.imageUrl.value);
+    formData.append('coordinates', JSON.stringify(state.location.value));
+    formData.append('creator', auth.userId);
 
     if (action === 'new-place') {
       mutateData({
         url: 'http://locomovolt.com:4000/api/places',
-        body: JSON.stringify(newPlace)
+        body: formData,
+        headers: {}
       })
         .then(data => {
           console.log('Data successfully inserted');
@@ -89,7 +92,10 @@ const Form = props => {
     } else {
       mutateData({
         url: `http://locomovolt.com:4000/api/places/place/${state.meta.placeId}`,
-        body: JSON.stringify(newPlace)
+        body: JSON.stringify({
+          title: state.title.value, 
+          description: state.title.value
+        })
       }, 'PATCH')
         .then(data => {
           console.log('Successfully updated!');
@@ -158,6 +164,18 @@ const Form = props => {
               validators: [VALIDATOR_MINLENGTH(5)],
             })}
         />
+        <Stack
+          direction="column"
+          sx={{ m: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <ImagePicker id="image" center onInputLoad={(file) => {
+            dispatch({
+              type: 'ON_CHANGE',
+              inputId: 'imageUrl',
+              val: file,
+              validators: []
+            })
+          }} />
+        </Stack>
         {action === 'new-place' && <Stack direction="row" spacing={10} sx={{ marginTop: '2%', alignItems: 'center', marginLeft: '10%' }}>
           <Button
             variant="text"

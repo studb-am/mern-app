@@ -17,6 +17,10 @@ const initialState = {
     value: null,
     isValid: false
   },
+  imageUrl: {
+    value: null,
+    isValid: false
+  },
   meta: {
     isValid: false,
   }
