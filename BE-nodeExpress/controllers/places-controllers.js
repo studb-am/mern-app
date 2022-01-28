@@ -41,12 +41,12 @@ const getPlaceByPlaceId = async (req, res, next) => {
 }
 
 const createPlace = async (req, res, next) => {
-    const { title, description, creator, imageUrl, coordinates } = req.body;
+    const { title, description, creator, coordinates } = req.body;
     
     const placeToCreate = new Place({
 	    title,
 	    description,
-	    imageUrl,
+	    imageUrl: req.file.path,
 	    location: coordinates,
 	    creator
     });
