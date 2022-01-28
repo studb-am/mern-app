@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
@@ -15,7 +18,7 @@ const signUp = async (req, res, next) => {
     const {name, email, password } = req.body;
     
     //Check 1: verify that the email has never been used
-    let exsistingUser;
+    let exsistingUser;	
     try {
 	existingUser = await User.findOne({email: email});
     } catch(err) {
@@ -24,23 +27,30 @@ const signUp = async (req, res, next) => {
 
     if (existingUser) {
 	return next(new HttpError('Mail already used by another user!', 422));
-    }	
+    }
 
+    const  hashedPassword = bcrypt.hashSync(password, 12);
+        
     const userToCreate = new User({
 	name,
 	email,
-	password,
+	password:hashedPassword,
 	image: req.file.path,
 	places: []
     });
 
+    let token;	
     try {
+	token = jwt.sign({
+	  userId: userToCreate._id,
+	  email: userToCreate.email
+	}, 'my_secret_key', { expiresIn: '1h' });
 	await userToCreate.save();
     } catch(err) {
 	return next(new HttpError(err.message, 422));
     }
 
-    res.status(201).json({ user: userToCreate })
+    res.status(201).json({ userId: userToCreate._id, email: userToCreate.email, token: token });
 
 }
 
@@ -50,15 +60,26 @@ const login = async (req, res, next) => {
     let existingUser;
     try {
 	existingUser = await User.findOne({email: email});
+	
     } catch(err) {
 	return next(new HttpError(err.message, 422));
     }
 
-    if(!existingUser || existingUser.password !== password) {
+    if(!existingUser || !bcrypt.compareSync(password, existingUser.password)) {
         return next(new HttpError('Login failed! Invalid Credential', 500));
     }
+    
+    let token;
+    try {
+       token = jwt.sign({
+          userId: existingUser._id,
+	  email: existingUser.email
+       }, 'my_secret_key', { expiresIn: '1h'  })
+    } catch(err) {
+	return next(new HttpError(err.message, 422));
+    }
 
-    res.status(200).json({user: existingUser});
+    res.status(200).json({userId: existingUser._id, email: existingUser.email, token: token});
 
 }
 
