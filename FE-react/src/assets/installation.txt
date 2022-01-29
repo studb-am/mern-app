@@ -1,5 +1,0 @@
-==========================================
------ maplibre-gl only -----------s--------
-==========================================
-
-For further details read here: https://documentation.maptiler.com/hc/en-us/articles/4405444890897-Display-MapLibre-GL-JS-map-using-React-JS
