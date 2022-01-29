@@ -11,7 +11,7 @@ services:
       - "/etc/letsencrypt:/etc/letsencrypt"
     environment:
       - NODE_ENV=production
-     env_file:
+    env_file:
       - mongoDB-credential.env
     stdin_open: true # docker run -i
     tty: true        # docker run -t
@@ -34,37 +34,12 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo_data_1:/data/db
-      - mongo_config_1:/data/configdb
+      - mongo-data-prod:/data/db
+      - mongo-cfg-prod:/data/configdb
     expose:
       - "27017"
-    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
     env_file:
       - mongoDB-credential.env
-  mongodb2:
-    container_name: "mongodb2"
-    image: mongo:latest
-    restart: always
-    volumes:
-      - mongo_data_2:/data/db
-      - mongo_config_2:/data/configdb
-    env_file:
-      - mongoDB-credential.env
-    expose:
-      -  "27017"
-    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
-  mongodb3:
-    container_name: "mongodb3"
-    image: mongo:latest
-    restart: always
-    volumes:
-      - mongo_data_3:/data/db
-      - mongo_config_3:/data/configdb
-    env_file:
-      - mongoDB-credential.env
-    expose:
-      -  "27017"
-    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
   gl-server:
     container_name: "gl-server"
     image: maptiler/tileserver-gl:latest
@@ -72,3 +47,9 @@ services:
       - 8080:80
     volumes:
       - /root/openmaptiles/data:/data
+
+volumes:
+    mongo-data-prod:
+      external: true
+    mongo-cfg-prod:
+      external: true

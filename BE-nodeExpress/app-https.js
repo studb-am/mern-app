@@ -58,7 +58,7 @@ app.use((error, req, res, next) => {
 
 const httpsServer = https.createServer(credentials, app);
 
-mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb1:${process.env.MONGO_PORT}/app?authSource=app`)
+mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb1:${process.env.MONGO_PORT}/app?authSource=admin`)
 //mongoose.connect(`mongodb://mongodb1:${process.env.MONGO_PORT}/app`)
 	.then(() => {
 	  httpsServer.listen(4000, () => {
