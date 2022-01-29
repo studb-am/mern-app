@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  node-server:
+    image: node_mongo_custom
+    ports:
+      - 4000:4000
+    volumes:
+      - "/root/projects/mern-app/BE-nodeExpress:/usr/src"
+      - "/root/project-imgs:/usr/imgs"
+      - "/etc/letsencrypt:/etc/letsencrypt"
+    environment:
+      - NODE_ENV=production
+     env_file:
+      - mongoDB-credential.env
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+  website:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "/root/project_code/test_ecommerce/client/build:/etc/nginx/html"
+      - "/etc/letsencrypt:/etc/letsencrypt"
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+  mongodb1:
+    container_name: "mongodb1"
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data_1:/data/db
+      - mongo_config_1:/data/configdb
+    expose:
+      - "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
+    env_file:
+      - mongoDB-credential.env
+  mongodb2:
+    container_name: "mongodb2"
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data_2:/data/db
+      - mongo_config_2:/data/configdb
+    env_file:
+      - mongoDB-credential.env
+    expose:
+      -  "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all"]
+  mongodb3:
+    container_name: "mongodb3"
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data_3:/data/db
+      - mongo_config_3:/data/configdb
+    env_file:
+      - mongoDB-credential.env
+    expose:
+      -  "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all" ]
+  gl-server:
+    container_name: "gl-server"
+    image: maptiler/tileserver-gl:latest
+    ports:
+      - 8080:80
+    volumes:
+      - /root/openmaptiles/data:/data

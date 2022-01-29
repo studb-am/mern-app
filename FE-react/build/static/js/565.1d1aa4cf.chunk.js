@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmern_app=self.webpackChunkmern_app||[]).push([[565],{565:function(n,r,e){e.r(r),e.d(r,{default:function(){return d}});e(2791);var o,c=e(168),u=e(7630),l=e(4554),t=e(184),i=(0,u.ZP)(l.Z)(o||(o=(0,c.Z)(["\n    background-color: blue;\n    margin-top: 14px;\n    color: red;\n    &:hover {\n        background-color: green;\n        color: yellow;\n    }\n"]))),a=function(n){return(0,t.jsx)(i,{sx:{width:200},children:n.children})},d=function(n){return(0,t.jsx)(a,{children:"Test box"})}}}]);
+//# sourceMappingURL=565.1d1aa4cf.chunk.js.map

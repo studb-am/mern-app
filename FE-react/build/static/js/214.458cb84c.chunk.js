@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmern_app=self.webpackChunkmern_app||[]).push([[214],{4214:function(e,t,n){n.r(t);var u=n(2791),a=n(6871),s=n(1462),r=n(184);t.default=function(e){var t=(0,u.useContext)(s.V);e.path,e.element;return t.userIsLogged?(0,r.jsx)(a.j3,{}):(0,r.jsx)(a.Fg,{to:"/authenticate"})}}}]);
+//# sourceMappingURL=214.458cb84c.chunk.js.map
