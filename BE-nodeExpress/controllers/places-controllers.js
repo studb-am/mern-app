@@ -21,7 +21,7 @@ const getPlacesByUserId = async (req, res, next) => {
         return;
     }
 
-    res.status(200).json({ places: places.map(place => place.toObject({ getters: true })) });
+    res.status(200).json({ places: places });
 }
 
 const getPlaceByPlaceId = async (req, res, next) => {
@@ -39,6 +39,43 @@ const getPlaceByPlaceId = async (req, res, next) => {
     }
 
     res.status(200).json({ place: place.toObject({ getters: true }) });
+}
+
+const createPlaceNoImage = async (req, res, next) => {
+    const { title, description, creator, coordinates } = req.body;
+
+    const placeToCreate = new Place({
+	    title,
+	    description,
+	    imageUrl: 'test_link',
+	    location: coordinates,
+	    creator
+    });
+
+   let user;
+   try {
+	user = await User.findById(creator);
+   } catch(err) {
+	return next(new HttpError(err.message, 500));
+   }
+
+   if (!user) {
+	return next(new HttpError('Could not find the user provided. Please try again with a valid user!', 422));
+   }
+
+   //nota va capito come avviare il primary Mongo con le 2 repliche e settare la password
+   try {
+	const currSession = await mongoose.startSession();
+	currSession.startTransaction();
+	await placeToCreate.save({session: currSession});
+	await user.places.push(placeToCreate);
+	await user.save({session: currSession});
+	await currSession.commitTransaction();
+    } catch(err) {
+	    return next(new HttpError(err.message, 500));
+    }
+
+    res.status(201).json({ placeCreated: placeToCreate });
 }
 
 const createPlace = async (req, res, next) => {
@@ -138,6 +175,7 @@ module.exports = {
     getPlaceByPlaceId,
     getPlacesByUserId,
     createPlace,
+    createPlaceNoImage,
     updatePlace,
     deletePlace
 }

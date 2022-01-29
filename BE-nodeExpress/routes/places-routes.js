@@ -15,6 +15,7 @@ routes.post('/',
 	fileUpload.single('imageUrl'),
 	placeControllers.createPlace
 );
+routes.post('/no-img', placeControllers.createPlaceNoImage);
 routes.patch('/place/:placeId', placeControllers.updatePlace);
 routes.delete('/place/:placeId', placeControllers.deletePlace);
 
