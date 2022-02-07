@@ -11,6 +11,7 @@ services:
       - "/root/projects/mern-app/FE-react/build:/etc/nginx/html"
       - "/root/projects/mern-app/BE-nginx/nginx.conf:/etc/nginx/nginx.conf"
       - "/etc/letsencrypt:/etc/letsencrypt"
+      - "/root/projects/mern-app/BE-nginx/script:/etc/nginx/script" #cartella che contiene i file js da runnare/testare
   map_server:
     container_name: map_server
     image: maptiler/tileserver-gl:latest
@@ -20,3 +21,30 @@ services:
       - webservice
     volumes:
       - /root/tileserver-gl/data:/data  
+  backend:
+    container_name: backend
+    image: node_mongo_custom
+    expose:
+      - 4000
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - mongoDB-credential.env
+    stdin_open: true
+    tty: true
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+     volumes:
+      - mongo-data-prod:/data/db
+      - mongo-cfg-prod:/data/configdb
+    expose:
+      - "27017"
+    env_file:
+      - mongoDB-credential.env
+
+volumes:
+  mongo-data-prod:
+    external: true
+  mongo-cfg-prod:
+    external: true

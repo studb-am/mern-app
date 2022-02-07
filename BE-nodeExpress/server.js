@@ -7,6 +7,7 @@ const HttpError = require('./models/http-error');
 
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
+const mapRoutes = require('./routes/map-routes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/mapToken', mapRoutes);
 
 app.use((req, res, next) => {
     throw new HttpError('Could not find the route specified', 404);
