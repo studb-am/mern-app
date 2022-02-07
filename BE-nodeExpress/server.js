@@ -49,7 +49,7 @@ app.use((error, req, res, next) => {
 
 })
 
-mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb1:${process.env.MONGO_PORT}/app?authSource=app`)
+mongoose.connect(`mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb:${process.env.MONGO_PORT}/app?authSource=admin`)
 //mongoose.connect(`mongodb://mongodb1:${process.env.MONGO_PORT}/app`)
 	.then(() => {
 	  app.listen(4000, () => {
