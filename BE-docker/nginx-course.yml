@@ -23,8 +23,8 @@ services:
   backend:
     container_name: backend
     image: node_mongo_custom
-    expose:
-      - 4000
+    ports:
+      - 4000:4000
     volumes:
       - "/root/projects/mern-app/BE-nodeExpress:/usr/src"
     environment:
