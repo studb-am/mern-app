@@ -30,7 +30,7 @@ services:
         constraints:
           - node.role == manager
   mongodb1:
-    container_name: "mongodb1"
+    container_name: "mongodb"
     image: mongo:latest
     restart: always
     volumes:
